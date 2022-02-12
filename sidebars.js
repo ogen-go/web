@@ -23,6 +23,7 @@ const sidebars = {
             type: 'category',
             label: 'Generated types',
             items: [
+                'types/primitive',
                 'types/optional',
                 'types/map',
             ],
