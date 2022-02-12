@@ -19,6 +19,11 @@ const sidebars = {
             label: 'Getting Started',
             items: ['intro'],
         },
+        {
+            type: 'category',
+            label: 'Generated types',
+            items: ['types/optional'],
+        },
     ],
 };
 
