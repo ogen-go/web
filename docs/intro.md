@@ -1,5 +1,5 @@
 ---
-id: getting-started
+id: intro
 title: Quick start
 sidebar_label: Quick start
 ---
