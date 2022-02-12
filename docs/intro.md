@@ -8,7 +8,7 @@ sidebar_label: Quick start
 
 ogen is a powerful and fast OpenAPI v3 code generator for Go.
 
-### Prepare environment
+## Prepare environment
 
 Create Go [module](https://github.com/golang/go/wiki/Modules#quick-start).
 
@@ -16,23 +16,23 @@ Create Go [module](https://github.com/golang/go/wiki/Modules#quick-start).
 go mod init <project>
 ```
 
-### Installation
+## Installation
 
 Then, install the `ogen` tool.
 
 ```console
-go install -v github.com/ogen-go/ogen/cmd/ogen
+go install -v github.com/ogen-go/ogen/cmd/ogen@latest
 ```
 
-### Download example schema or write your own
+## Generate code
+
+### Setup generator
 
 Download petstore example.
 
 ```console
 wget https://raw.githubusercontent.com/ogen-go/ogen/main/_testdata/swagger-petstore.yml
 ```
-
-### Generate code
 
 Create `generate.go` file:
 
