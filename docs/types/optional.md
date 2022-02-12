@@ -44,12 +44,12 @@ To implement decoder, ogen follows the rules below
 
 ### Type
 
-| Schema                 | Type         |
-|------------------------|--------------|
-| required               | `T`          |
-| optional               | `Opt[#T]`    |
-| nullable, but required | `ONil[#T]`   |
-| optional & nullable    | `OptNil[#T]` |
+| Schema                 | Type          |
+|------------------------|---------------|
+| required               | `T`           |
+| optional               | `Opt[#T]`     |
+| nullable, but required | `Nil[#T]`     |
+| optional & nullable    | `OptNil[#T]`  |
 
 ### Decoder behavior
 

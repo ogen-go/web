@@ -22,7 +22,10 @@ const sidebars = {
         {
             type: 'category',
             label: 'Generated types',
-            items: ['types/optional'],
+            items: [
+                'types/optional',
+                'types/map',
+            ],
         },
     ],
 };
