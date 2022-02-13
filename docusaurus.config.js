@@ -11,7 +11,7 @@ const config = {
     url: 'https://ogen.dev',
     baseUrl: '/',
     onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'warn',
+    onBrokenMarkdownLinks: 'throw',
     favicon: 'img/favicon.ico',
     organizationName: 'ogen-go', // Usually your GitHub org/user name.
     projectName: 'ogen', // Usually your repo name.
@@ -53,7 +53,7 @@ const config = {
                         type: 'doc',
                         docId: 'intro',
                         position: 'left',
-                        label: 'Docs'
+                        label: 'Getting started'
                     },
                     {
                         "href": "https://pkg.go.dev/github.com/ogen-go/ogen?tab=doc",

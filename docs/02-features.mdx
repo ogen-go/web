@@ -1,0 +1,29 @@
+---
+id: features
+title: Features
+sidebar_position: 2
+---
+
+
+:::caution
+
+Work in progress, so some [features are missing](#not-implemented)
+
+:::
+
+
+* No reflection or `interface{}`
+    * The json encoding is code-generated, optimized and uses [go-faster/jx](https://github.com/go-faster/jx) for speed and overcoming `encoding/json` limitations
+    * Validation is code-generated according to spec
+* Code-generated static radix router
+* No more boilerplate
+* Statically typed client and server
+* Convenient support for optional, nullable and optional nullable fields
+* Generated sum types for oneOf
+* OpenTelemetry tracing and metrics
+
+## Not implemented
+
+* Content-types
+  * XML
+* Security schemas
