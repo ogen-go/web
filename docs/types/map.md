@@ -10,9 +10,10 @@ To represent `object` with [`additionalProperties`](https://swagger.io/docs/spec
 `ogen` uses Go `map` type.
 
 ```yaml title="string map schema"
-type: object
-additionalProperties:
-  type: string
+Map:
+    type: object
+    additionalProperties:
+      type: string
 ```
 
 ```go title="generated map type"
@@ -24,14 +25,15 @@ type Map map[string]string
 Map with fixed-keys represent by `struct` with `AdditionalProps` field.
 
 ```yaml title="string map schema"
-type: object
-properties:
-  default:
-    type: integer
-required:
-  - default
-additionalProperties:
-  type: string
+Map:
+    type: object
+    properties:
+      default:
+        type: integer
+    required:
+      - default
+    additionalProperties:
+      type: string
 ```
 
 ```go title="generated map type"
@@ -46,8 +48,9 @@ type Map struct {
 Map with unspecified schema represent by `map` with [`jx.Raw`](https://pkg.go.dev/github.com/go-faster/jx) values.
 
 ```yaml title="string map schema"
-type: object
-additionalProperties: true
+Map:
+    type: object
+    additionalProperties: true
 ```
 
 ```go title="generated map type"

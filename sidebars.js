@@ -25,6 +25,7 @@ const sidebars = {
             items: [
                 'types/primitive',
                 'types/optional',
+                'types/sumtype',
                 'types/map',
             ],
         },
