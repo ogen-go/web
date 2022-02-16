@@ -38,6 +38,9 @@ const config = {
                 googleAnalytics: {
                     trackingID: 'G-HWPX87415Z',
                 },
+                gtag: {
+                    trackingID: '3250571077',
+                },
             }),
         ],
     ],
