@@ -31,7 +31,7 @@ go install -v github.com/ogen-go/ogen/cmd/ogen@latest
 Download petstore example.
 
 ```bash
-wget https://raw.githubusercontent.com/ogen-go/ogen/main/_testdata/swagger-petstore.yml
+wget https://raw.githubusercontent.com/ogen-go/web/main/examples/petstore.yml
 ```
 
 Create `generate.go` file:
@@ -82,23 +82,11 @@ type Handler interface {
 	// Add a new pet to the store.
 	//
 	// POST /pet
-	AddPet(ctx context.Context, req Pet) (AddPetRes, error)
+	AddPet(ctx context.Context, req Pet) (Pet, error)
 	// DeletePet implements deletePet operation.
 	//
 	// DELETE /pet/{petId}
-	DeletePet(ctx context.Context, params DeletePetParams) (DeletePetBadRequest, error)
-	// FindPetsByStatus implements findPetsByStatus operation.
-	//
-	// Multiple status values can be provided with comma separated strings.
-	//
-	// GET /pet/findByStatus
-	FindPetsByStatus(ctx context.Context, params FindPetsByStatusParams) (FindPetsByStatusRes, error)
-	// FindPetsByTags implements findPetsByTags operation.
-	//
-	// Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
-	//
-	// GET /pet/findByTags
-	FindPetsByTags(ctx context.Context, params FindPetsByTagsParams) (FindPetsByTagsRes, error)
+	DeletePet(ctx context.Context, params DeletePetParams) (DeletePetOK, error)
 	// GetPetById implements getPetById operation.
 	//
 	// Returns a single pet.
@@ -107,126 +95,99 @@ type Handler interface {
 	GetPetById(ctx context.Context, params GetPetByIdParams) (GetPetByIdRes, error)
 	// UpdatePet implements updatePet operation.
 	//
-	// Update an existing pet by Id.
-	//
-	// PUT /pet
-	UpdatePet(ctx context.Context, req Pet) (UpdatePetRes, error)
-	// UpdatePetWithForm implements updatePetWithForm operation.
-	//
 	// POST /pet/{petId}
-	UpdatePetWithForm(ctx context.Context, params UpdatePetWithFormParams) (UpdatePetWithFormMethodNotAllowed, error)
-	// UploadFile implements uploadFile operation.
-	//
-	// POST /pet/{petId}/uploadImage
-	UploadFile(ctx context.Context, req UploadFileReq, params UploadFileParams) (ApiResponse, error)
+	UpdatePet(ctx context.Context, params UpdatePetParams) (UpdatePetOK, error)
 }
 ```
 
 ```go
-package project
+package main
 
 import (
 	"context"
+	"sync"
 
 	petstore "<project>/petstore"
 )
 
 type petsService struct {
+	pets map[int64]petstore.Pet
+	id   int64
+	mux  sync.Mutex
 }
 
-func (p petsService) AddPet(ctx context.Context, req petstore.Pet) (petstore.AddPetRes, error) {
-	resp := req
-	return &resp, nil
+func (p *petsService) AddPet(ctx context.Context, req petstore.Pet) (petstore.Pet, error) {
+	p.mux.Lock()
+	defer p.mux.Unlock()
+
+	p.pets[p.id] = req
+	p.id++
+	return req, nil
 }
 
-func (p petsService) DeletePet(ctx context.Context, params petstore.DeletePetParams) (petstore.DeletePetBadRequest, error) {
-	return petstore.DeletePetBadRequest{}, nil
+func (p *petsService) DeletePet(ctx context.Context, params petstore.DeletePetParams) (petstore.DeletePetOK, error) {
+	p.mux.Lock()
+	defer p.mux.Unlock()
+
+	delete(p.pets, params.PetId)
+	return petstore.DeletePetOK{}, nil
 }
 
-func (p petsService) FindPetsByStatus(ctx context.Context, params petstore.FindPetsByStatusParams) (petstore.FindPetsByStatusRes, error) {
-	return petstore.FindPetsByStatusOKApplicationJSON{}, nil
+func (p *petsService) GetPetById(ctx context.Context, params petstore.GetPetByIdParams) (petstore.GetPetByIdRes, error) {
+	p.mux.Lock()
+	defer p.mux.Unlock()
+
+	pet, ok := p.pets[params.PetId]
+	if !ok {
+		// Return Not Found.
+		return &petstore.GetPetByIdNotFound{}, nil
+	}
+	return &pet, nil
 }
 
-func (p petsService) FindPetsByTags(ctx context.Context, params petstore.FindPetsByTagsParams) (petstore.FindPetsByTagsRes, error) {
-	return petstore.FindPetsByTagsOKApplicationJSON{}, nil
-}
+func (p *petsService) UpdatePet(ctx context.Context, params petstore.UpdatePetParams) (petstore.UpdatePetOK, error) {
+	p.mux.Lock()
+	defer p.mux.Unlock()
 
-func (p petsService) GetPetById(ctx context.Context, params petstore.GetPetByIdParams) (petstore.GetPetByIdRes, error) {
-	return &petstore.GetPetByIdNotFound{}, nil
-}
+	pet := p.pets[params.PetId]
+	pet.Status = params.Status
+	if val, ok := params.Name.Get(); ok {
+		pet.Name = val
+	}
+	p.pets[params.PetId] = pet
 
-func (p petsService) UpdatePet(ctx context.Context, req petstore.Pet) (petstore.UpdatePetRes, error) {
-	resp := req
-	return &resp, nil
-}
-
-func (p petsService) UpdatePetWithForm(ctx context.Context, params petstore.UpdatePetWithFormParams) (petstore.UpdatePetWithFormMethodNotAllowed, error) {
-	return petstore.UpdatePetWithFormMethodNotAllowed{}, nil
-}
-
-func (p petsService) UploadFile(ctx context.Context, req petstore.UploadFileReq, params petstore.UploadFileParams) (petstore.ApiResponse, error) {
-	return petstore.ApiResponse{}, nil
-}
-```
-
-#### Interface responses
-
-Notice that handler for operation with multiple response types returns interface.
-
-```yaml title="addPet operation schema"
-  /pet:
-    post:
-      tags:
-        - pet
-      summary: Add a new pet to the store
-      description: Add a new pet to the store
-      operationId: addPet
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pet'
-        '405':
-          description: Invalid input
-      requestBody:
-        description: Create a new pet in the store
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pet'
-```
-
-```go title="addPet operation response interface"
-type AddPetRes interface {
-	addPetRes()
+	return petstore.UpdatePetOK{}, nil
 }
 ```
 
-Such interface represents a sum type (or [_tagged union_](https://en.wikipedia.org/wiki/Tagged_union))
-of different response types.
+### Run server
+Now, we are ready to run our server!
 
-```go title="addPet operation response variants"
-// AddPetMethodNotAllowed is response for AddPet operation.
-type AddPetMethodNotAllowed struct{}
+```go title=main.go
+package main
 
-func (*AddPetMethodNotAllowed) addPetRes() {}
+import (
+    "log"
+    "net/http"
 
-// Ref: #/components/schemas/Pet
-type Pet struct {
-	ID        OptInt64    `json:"id"`
-	Name      string      `json:"name"`
-	Category  OptCategory `json:"category"`
-	PhotoUrls []string    `json:"photoUrls"`
-	Tags      []Tag       `json:"tags"`
-	// Pet status in the store.
-	Status OptPetStatus `json:"status"`
+    petstore "<project>/petstore"
+)
+
+func main() {
+	// Create service instance.
+	service := &petsService{
+		pets: map[int64]petstore.Pet{},
+	}
+	// Create generated server.
+	srv := petstore.NewServer(service)
+	if err := http.ListenAndServe(":8080", srv); err != nil {
+		log.Fatal(err)
+	}
 }
-
-func (*Pet) addPetRes()     {}
 ```
 
-
-
+Check that server started by creating pet
+```bash
+curl -X "POST" -H "Content-Type: application/json" --data "{\"name\":\"Cat\"}" http://localhost:8080/pet
+{"name":"Cat"}
+```
