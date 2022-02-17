@@ -56,7 +56,7 @@ const config = {
                         type: 'doc',
                         docId: 'intro',
                         position: 'left',
-                        label: 'Getting started'
+                        label: 'Docs'
                     },
                     {
                         "href": "https://pkg.go.dev/github.com/ogen-go/ogen?tab=doc",
