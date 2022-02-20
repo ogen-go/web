@@ -47,6 +47,7 @@ const config = {
         ({
             algolia: {
                 apiKey: "4c0a73a85956a3545b16e0160995697d",
+                appId: "X2N6LG2Z0C",
                 indexName: "ogen",
             },
             navbar: {
