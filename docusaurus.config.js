@@ -45,6 +45,10 @@ const config = {
     themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
+            algolia: {
+                apiKey: "4c0a73a85956a3545b16e0160995697d",
+                indexName: "ogen",
+            },
             navbar: {
                 title: 'ogen',
                 logo: {
