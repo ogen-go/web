@@ -179,7 +179,10 @@ func main() {
 		pets: map[int64]petstore.Pet{},
 	}
 	// Create generated server.
-	srv := petstore.NewServer(service)
+	srv, err := petstore.NewServer(service)
+    if err != nil {
+        log.Fatal(err)
+    }
 	if err := http.ListenAndServe(":8080", srv); err != nil {
 		log.Fatal(err)
 	}
