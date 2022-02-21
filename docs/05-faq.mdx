@@ -1,0 +1,24 @@
+---
+id: faq
+title: Frequently Asked Questions (FAQ)
+sidebar_label: FAQ
+sidebar_position: 5
+---
+
+## Questions
+[How to set `404 Not Found` handler?](#how-to-set-404-not-found-handler)
+
+## Answers
+
+#### How to set `404 Not Found` handler?
+Use `WithNotFound` option:
+```go
+h := myHandler{}
+srv, err := api.NewServer(h, api.WithNotFound(func(w http.ResponseWriter, r *http.Request) {
+		_, _ = io.WriteString(w, `{"error": "not found"}`)
+}))
+if err != nil {
+	panic(err)
+}
+...
+```
