@@ -28,7 +28,7 @@ const FeatureList = [
     title: 'OpenTelemetry',
     description: (
       <>
-        Tracing and metrics support that is compatible with OpenTelemtry
+        Tracing and metrics support that is compatible with OpenTelemetry
       </>
     ),
   },
