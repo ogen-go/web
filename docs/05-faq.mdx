@@ -7,8 +7,9 @@ sidebar_position: 5
 
 ## Questions
 - [How to set `404 Not Found` handler?](#how-to-set-404-not-found-handler)
-- [How to use middlewares](#how-to-use-middlewares)
-- [How to use prometheus](#how-to-use-promethus)
+- [How to set error handler?](#how-to-set-error-handler)
+- [How to use middlewares?](#how-to-use-middlewares)
+- [How to use prometheus?](#how-to-use-prometheus)
 
 ## Answers
 
@@ -22,8 +23,32 @@ srv, err := api.NewServer(h, api.WithNotFound(func(w http.ResponseWriter, r *htt
 if err != nil {
 	panic(err)
 }
-...
 ```
+
+#### How to set error handler?
+Use `WithErrorHandler` option:
+```go
+h := myHandler{}
+srv, err := api.NewServer(h, api.WithErrorHandler(func(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
+    var (
+		code    = http.StatusInternalServerError
+		ogenErr ogenerrors.Error
+	)
+	switch {
+	case errors.Is(err, ht.ErrNotImplemented):
+		code = http.StatusNotImplemented
+	case errors.As(err, &ogenErr):
+		code = ogenErr.Code()
+	}
+    _, _ = io.WriteString(w, http.StatusText(code))
+}))
+if err != nil {
+	panic(err)
+}
+```
+
+Also, check out the [Convenient errors](concepts/convenient_errors.md) concept.
+
 
 #### How to use middlewares?
 
@@ -92,8 +117,7 @@ func newServer() *http.Server {
 }
 ```
 
-
-#### How to use promethus?
+#### How to use prometheus?
 
 To instrument server or client with OpenTelemetry and prometheus exporter, pass `oas.Option`:
 
