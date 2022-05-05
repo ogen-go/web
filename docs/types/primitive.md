@@ -26,6 +26,17 @@ String is byte sequence primitive type represent by Go `string` or `[]byte`.
 | binary    | `string`                                                      | Binary string                                                                                                                                                |
 | hostname  | `string`                                                      | Hostname as defined by [RFC 1034, section 3.1](https://datatracker.ietf.org/doc/html/rfc1034#section-3.1)                                                    |
 
+#### Non-standard formats
+
+| Format            | Type                                           | Description                                                                                                                                    |
+|-------------------|------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| unix/unix-seconds | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.Unix()`](https://pkg.go.dev/time#Time.Unix), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306).           |
+| unix-nano         | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.UnixNano()`](https://pkg.go.dev/time#Time.UnixNano), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306).   |
+| unix-micro        | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.UnixMicro()`](https://pkg.go.dev/time#Time.UnixMicro), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306). |
+| unix-milli        | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.UnixMilli()`](https://pkg.go.dev/time#Time.UnixMilli), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306). |
+| int32             | `int32`                                        | 32-bit signed integer, encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/307).                                        |
+| int64             | `int64`                                        | 64-bit signed integer, encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/307).                                        |
+
 ### Validation
 
 :::note
