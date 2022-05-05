@@ -10,6 +10,12 @@ String is byte sequence primitive type represent by Go `string` or `[]byte`.
 
 ### Supported formats
 
+:::caution
+
+`duration` is a Go `time.Duration` format, but JSON Schema defines it as [RFC 3339 duration](https://datatracker.ietf.org/doc/html/rfc3339#appendix-A).
+
+:::
+
 | Format    | Type                                                          | Description                                                                                                                                                  |
 |-----------|---------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | byte      | `[]byte`                                                      | Base64-encoded string as defined in [RFC4648](https://www.rfc-editor.org/rfc/rfc4648.html)                                                                   |
@@ -28,14 +34,14 @@ String is byte sequence primitive type represent by Go `string` or `[]byte`.
 
 #### Non-standard formats
 
-| Format            | Type                                           | Description                                                                                                                                    |
-|-------------------|------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-| unix/unix-seconds | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.Unix()`](https://pkg.go.dev/time#Time.Unix), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306).           |
-| unix-nano         | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.UnixNano()`](https://pkg.go.dev/time#Time.UnixNano), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306).   |
-| unix-micro        | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.UnixMicro()`](https://pkg.go.dev/time#Time.UnixMicro), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306). |
-| unix-milli        | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.UnixMilli()`](https://pkg.go.dev/time#Time.UnixMilli), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306). |
-| int32             | `int32`                                        | 32-bit signed integer, encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/307).                                        |
-| int64             | `int64`                                        | 64-bit signed integer, encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/307).                                        |
+| Format            | Type                                           | Description                                                                                                                                   |
+|-------------------|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| unix/unix-seconds | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.Unix()`](https://pkg.go.dev/time#Time.Unix), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306)           |
+| unix-nano         | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.UnixNano()`](https://pkg.go.dev/time#Time.UnixNano), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306)   |
+| unix-micro        | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.UnixMicro()`](https://pkg.go.dev/time#Time.UnixMicro), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306) |
+| unix-milli        | [`time.Time`](https://pkg.go.dev/time#Time)    | [`Time.UnixMilli()`](https://pkg.go.dev/time#Time.UnixMilli), encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/306) |
+| int32             | `int32`                                        | 32-bit signed integer, encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/307)                                        |
+| int64             | `int64`                                        | 64-bit signed integer, encoded as string. See [issue #307](https://github.com/ogen-go/ogen/issues/307)                                        |
 
 ### Validation
 
@@ -43,6 +49,12 @@ String is byte sequence primitive type represent by Go `string` or `[]byte`.
 
 Note that length validation uses [`utf8.RuneCountInString`](https://pkg.go.dev/unicode/utf8#RuneCountInString) to count
 string length.
+
+:::
+
+:::caution
+
+`ogen` uses Go's [`regexp`](https://pkg.go.dev/regexp) instead of ECMAScript-compatible.
 
 :::
 

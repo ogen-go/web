@@ -6,7 +6,7 @@ sidebar_label: Any
 
 ## Description
 
-To represent untyped and empty schemas, ogen uses "any" `jx.Raw` type.
+To represent untyped and empty schemas, ogen uses "any" [`jx.Raw`](https://pkg.go.dev/github.com/go-faster/jx) type.
 
 ### Checking JSON type
 ```go
