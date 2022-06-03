@@ -39,7 +39,7 @@ Create `generate.go` file:
 ```go title="<project>/generate.go"
 package project
 
-//go:generate go run github.com/ogen-go/ogen/cmd/ogen --schema ./petstore.yml --target petstore --clean
+//go:generate go run github.com/ogen-go/ogen/cmd/ogen --target petstore --clean petstore.yml
 ```
 
 Then go to the root directory of your module, and run:
