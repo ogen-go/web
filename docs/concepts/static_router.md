@@ -58,7 +58,34 @@ if err != nil {
 }
 ```
 
-## `FindRoute` method
+## Using `net/http` middlewares
+
+The `Server` type implements [`http.Handler`](https://pkg.go.dev/net/http#Handler) interface. Any `net/http`-compatible
+middleware can be used.
+
+### Applying middleware to all routes
+
+```go
+package main
+
+import (
+	"net/http"
+
+	"github.com/klauspost/compress/gzhttp"
+
+	api "<your_api_package>"
+)
+
+func main() {
+	srv, err := api.NewServer(myHandler{})
+	if err != nil {
+		panic(err)
+	}
+	http.ListenAndServe(":8080", gzhttp.GzipHandler(srv))
+}
+```
+
+### Using `FindRoute` method
 
 The `Server` type defines a `FindRoute` method that finds and returns the `Route` for the request, if any.
 
@@ -111,29 +138,51 @@ func main() {
 }
 ```
 
-## Using `net/http` middlewares
+## Adding profiler, metrics or static content route
 
-The `Server` type implements [`http.Handler`](https://pkg.go.dev/net/http#Handler) interface. Any `net/http`-compatible
-middleware can be used.
-
-#### Applying for all routes
+To serve other routes, you can use any upper-level router.
 
 ```go
 package main
 
 import (
+	"embed"
 	"net/http"
+	"net/http/pprof"
 
-	"github.com/klauspost/compress/gzhttp"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	api "<your_api_package>"
 )
+
+//go:embed static
+var static embed.FS
 
 func main() {
 	srv, err := api.NewServer(myHandler{})
 	if err != nil {
 		panic(err)
 	}
-	http.ListenAndServe(":8080", gzhttp.GzipHandler(srv))
+	mux := http.NewServeMux()
+	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", srv))
+	// Register static files.
+	mux.Handle("/static/", http.FileServer(http.FS(static)))
+	// Register metrics handler.
+	mux.Handle("/metrics", promhttp.Handler())
+	{
+		// Register pprof handlers.
+		mux.HandleFunc("/debug/pprof/", pprof.Index)
+		mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+		mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+		mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+		mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+	}
+	// net/http would serve
+	//
+	//  - API routes at /api/v1/*
+	//  - pprof handlers on /debug/pprof/*
+	//  - Files from static folder on /static/*
+	//  - Prometheus metrics handler on /metrics
+	http.ListenAndServe(":8080", mux)
 }
 ```
