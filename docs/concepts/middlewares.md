@@ -11,6 +11,14 @@ future.
 
 :::
 
+:::info
+
+If you are looking for a way how to use `net/http` middlewares with `ogen`, check out the
+[Using net/http middlewares](static_router.md#using-nethttp-middlewares) section.
+
+:::
+
+
 `ogen` provides a high-level middleware API that allows you to perform custom logic before and after the request
 is handled by the server.
 

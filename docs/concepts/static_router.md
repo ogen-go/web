@@ -111,12 +111,12 @@ func main() {
 }
 ```
 
-## Middlewares
+## Using `net/http` middlewares
 
 The `Server` type implements [`http.Handler`](https://pkg.go.dev/net/http#Handler) interface. Any `net/http`-compatible
 middleware can be used.
 
-#### For all routes
+#### Applying for all routes
 
 ```go
 package main
