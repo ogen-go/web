@@ -14,7 +14,7 @@ future.
 :::info
 
 If you are looking for a way how to use `net/http` middlewares with `ogen`, check out the
-[Using net/http middlewares](static_router.md#using-nethttp-middlewares) section.
+[Using net/http middlewares](static_router.mdx#using-nethttp-middlewares) section.
 
 :::
 

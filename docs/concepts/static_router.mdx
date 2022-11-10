@@ -4,6 +4,9 @@ title: Static router
 sidebar_label: Static router
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 The `ogen` tool generates a static blazing fast [radix tree](https://en.wikipedia.org/wiki/Radix_tree)-based router.
 
 ## Router error handling
@@ -142,47 +145,21 @@ func main() {
 
 To serve other routes, you can use any upper-level router.
 
-```go
-package main
+Example would serve
 
-import (
-	"embed"
-	"net/http"
-	"net/http/pprof"
+ - API routes at `/api/v1/*`
+ - [pprof](https://pkg.go.dev/net/http/pprof) handlers on `/debug/pprof/*`
+ - Files from `static` folder on `/static/*`
+ - Prometheus metrics handler on `/metrics`
 
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+import CustomStdExample from './_static_router_examples/custom_std.md';
+import CustomChiExample from './_static_router_examples/custom_chi.md';
 
-	api "<your_api_package>"
-)
-
-//go:embed static
-var static embed.FS
-
-func main() {
-	srv, err := api.NewServer(myHandler{})
-	if err != nil {
-		panic(err)
-	}
-	mux := http.NewServeMux()
-	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", srv))
-	// Register static files.
-	mux.Handle("/static/", http.FileServer(http.FS(static)))
-	// Register metrics handler.
-	mux.Handle("/metrics", promhttp.Handler())
-	{
-		// Register pprof handlers.
-		mux.HandleFunc("/debug/pprof/", pprof.Index)
-		mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
-		mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
-		mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
-		mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
-	}
-	// net/http would serve
-	//
-	//  - API routes at /api/v1/*
-	//  - pprof handlers on /debug/pprof/*
-	//  - Files from static folder on /static/*
-	//  - Prometheus metrics handler on /metrics
-	http.ListenAndServe(":8080", mux)
-}
-```
+<Tabs>
+  <TabItem value="std" label="net/http" default>
+      <CustomStdExample/>
+  </TabItem>
+  <TabItem value="chi" label="chi">
+      <CustomChiExample/>
+  </TabItem>
+</Tabs>
