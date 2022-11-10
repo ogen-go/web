@@ -14,6 +14,7 @@ If there is no route for the request, the router call the `config.NotFound` hand
 The default handler is [`http.NotFound`](https://pkg.go.dev/net/http#NotFound).
 
 You can change the default handler by using `WithNotFound` option.
+
 ```go
 h := myHandler{}
 srv, err := api.NewServer(h, api.WithNotFound(func(w http.ResponseWriter, r *http.Request) {
@@ -28,9 +29,9 @@ if err != nil {
 
 ### Method Not Allowed
 
-
 If request path matches but the method is not allowed, the router call the `config.MethodNotAllowed` handler.
-The default handler returns empty body with [`405 Method Not Allowed`](https://httpwg.org/specs/rfc7231.html#rfc.section.6.5.5) code
+The default handler returns empty body
+with [`405 Method Not Allowed`](https://httpwg.org/specs/rfc7231.html#rfc.section.6.5.5) code
 and [`Allow`](https://httpwg.org/specs/rfc7231.html#header.allow) header with comma-separated allowed methods list.
 
 You can change the default handler by using `WithMethodNotAllowed` option.
@@ -64,7 +65,7 @@ The `Server` type defines a `FindRoute` method that finds and returns the `Route
 It's useful for middleware that needs to find the route for the request.
 
 ```go
-package example
+package main
 
 import (
 	"net/http"
@@ -96,7 +97,7 @@ func (m myMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		args := route.Args()
 		if args[0] == "debug" {
 			w.Header().Set("X-Debug", "true")
-        }
+		}
 	}
 	m.Next.ServeHTTP(w, r)
 }
@@ -112,10 +113,13 @@ func main() {
 
 ## Middlewares
 
-The `Server` type implements [`http.Handler`](https://pkg.go.dev/net/http#Handler) interface. Any `net/http`-compatible middleware can be used.
+The `Server` type implements [`http.Handler`](https://pkg.go.dev/net/http#Handler) interface. Any `net/http`-compatible
+middleware can be used.
+
+#### For all routes
 
 ```go
-package example
+package main
 
 import (
 	"net/http"
