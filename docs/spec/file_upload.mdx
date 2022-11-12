@@ -1,0 +1,53 @@
+---
+id: file_upload
+title: File upload
+sidebar_label: File upload
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+OpenAPI 3.0 provides two ways to upload files:
+- [File upload via request body](#file-upload-via-request-body)
+- [File upload via `multipart` request](#file-upload-via-multipartform-data)
+
+## File upload via request body
+
+File would be uploaded via request body.
+The request body should be of type `string` and format `binary`.
+
+import RequestBodyClientExample from './_file_upload_examples/request_body/client.md';
+import RequestBodyServerExample from './_file_upload_examples/request_body/server.md';
+import RequestBodySpecExample from './_file_upload_examples/request_body/spec.md';
+
+<Tabs>
+  <TabItem value="spec" label="Spec" default>
+      <RequestBodySpecExample/>
+  </TabItem>
+  <TabItem value="client" label="Client">
+      <RequestBodyClientExample/>
+  </TabItem>
+    <TabItem value="server" label="Server">
+      <RequestBodyServerExample/>
+  </TabItem>
+</Tabs>
+
+## File upload via `multipart` request
+
+Multiple files can be uploaded via `multipart` request, along with other fields.
+
+import MultipartClientExample from './_file_upload_examples/multipart/client.md';
+import MultipartServerExample from './_file_upload_examples/multipart/server.md';
+import MultipartSpecExample from './_file_upload_examples/multipart/spec.md';
+
+<Tabs>
+    <TabItem value="spec" label="Spec" default>
+        <MultipartSpecExample/>
+    </TabItem>
+    <TabItem value="client" label="Client">
+        <MultipartClientExample/>
+    </TabItem>
+    <TabItem value="server" label="Server">
+        <MultipartServerExample/>
+    </TabItem>
+</Tabs>
