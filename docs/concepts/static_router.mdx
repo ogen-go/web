@@ -50,7 +50,7 @@ You should add the `Allow` header to the response by yourself.
 
 ```go
 h := myHandler{}
-srv, err := api.NewServer(h, api.WithNotFound(func(w http.ResponseWriter, r *http.Request, allowed string) {
+srv, err := api.NewServer(h, api.WithMethodNotAllowed(func(w http.ResponseWriter, r *http.Request, allowed string) {
         w.Header().Set("Content-Type", "text/plain")
         w.Header().Set("Allow", allowed)
         w.WriteHeader(http.StatusMethodNotAllowed)
