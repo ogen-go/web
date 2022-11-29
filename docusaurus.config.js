@@ -23,12 +23,9 @@ const config = {
                     // Please change this to your repo.
                     editUrl: 'https://github.com/ogen-go/web/edit/main/',
                 },
-                // blog: {
-                //   showReadingTime: true,
-                //   // Please change this to your repo.
-                //   editUrl:
-                //     'https://github.com/ogen-go/ogen/edit/main/_docs_v2/blog/',
-                // },
+                blog: {
+                  showReadingTime: true,
+                },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
                 },
@@ -60,7 +57,7 @@ const config = {
                         "label": "GoDoc",
                         "position": "left",
                     },
-                    // {to: '/blog', label: 'Blog', position: 'left'},
+                    {to: '/blog', label: 'Blog', position: 'left'},
                     {
                         href: 'https://t.me/ogen_dev',
                         label: 'Telegram',
