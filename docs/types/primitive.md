@@ -52,11 +52,6 @@ string length.
 
 :::
 
-:::caution
-
-`ogen` uses Go's [`regexp`](https://pkg.go.dev/regexp) instead of ECMAScript-compatible.
-
-:::
 
 | Validator | Description                                    |
 |-----------|------------------------------------------------|
