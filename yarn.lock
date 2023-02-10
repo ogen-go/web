@@ -1279,7 +1279,7 @@
     webpack-merge "^5.8.0"
     webpackbar "^5.0.2"
 
-"@docusaurus/core@^2.3.1":
+"@docusaurus/core@2.3.1", "@docusaurus/core@^2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@docusaurus/core/-/core-2.3.1.tgz#32849f2ffd2f086a4e55739af8c4195c5eb386f2"
   integrity sha512-0Jd4jtizqnRAr7svWaBbbrCCN8mzBNd2xFLoT/IM7bGfFie5y58oz97KzXliwiLY3zWjqMXjQcuP1a5VgCv2JA==
@@ -1522,7 +1522,7 @@
     react-json-view "^1.21.3"
     tslib "^2.4.0"
 
-"@docusaurus/plugin-google-analytics@2.2.0", "@docusaurus/plugin-google-analytics@^2.2.0":
+"@docusaurus/plugin-google-analytics@2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@docusaurus/plugin-google-analytics/-/plugin-google-analytics-2.2.0.tgz#63c7137eff5a1208d2059fea04b5207c037d7954"
   integrity sha512-+eZVVxVeEnV5nVQJdey9ZsfyEVMls6VyWTIj8SmX0k5EbqGvnIfET+J2pYEuKQnDIHxy+syRMoRM6AHXdHYGIg==
@@ -1530,6 +1530,16 @@
     "@docusaurus/core" "2.2.0"
     "@docusaurus/types" "2.2.0"
     "@docusaurus/utils-validation" "2.2.0"
+    tslib "^2.4.0"
+
+"@docusaurus/plugin-google-analytics@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@docusaurus/plugin-google-analytics/-/plugin-google-analytics-2.3.1.tgz#e2e7db4cf6a7063e8ba5e128d4e413f4d6a0c862"
+  integrity sha512-OHip0GQxKOFU8n7gkt3TM4HOYTXPCFDjqKbMClDD3KaDnyTuMp/Zvd9HSr770lLEscgPWIvzhJByRAClqsUWiQ==
+  dependencies:
+    "@docusaurus/core" "2.3.1"
+    "@docusaurus/types" "2.3.1"
+    "@docusaurus/utils-validation" "2.3.1"
     tslib "^2.4.0"
 
 "@docusaurus/plugin-google-gtag@2.2.0":
@@ -1668,6 +1678,20 @@
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@docusaurus/types/-/types-2.2.0.tgz#02c577a4041ab7d058a3c214ccb13647e21a9857"
   integrity sha512-b6xxyoexfbRNRI8gjblzVOnLr4peCJhGbYGPpJ3LFqpi5nsFfoK4mmDLvWdeah0B7gmJeXabN7nQkFoqeSdmOw==
+  dependencies:
+    "@types/history" "^4.7.11"
+    "@types/react" "*"
+    commander "^5.1.0"
+    joi "^17.6.0"
+    react-helmet-async "^1.3.0"
+    utility-types "^3.10.0"
+    webpack "^5.73.0"
+    webpack-merge "^5.8.0"
+
+"@docusaurus/types@2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@docusaurus/types/-/types-2.3.1.tgz#785ade2e0f4e35e1eb7fb0d04c27d11c3991a2e8"
+  integrity sha512-PREbIRhTaNNY042qmfSE372Jb7djZt+oVTZkoqHJ8eff8vOIc2zqqDqBVc5BhOfpZGPTrE078yy/torUEZy08A==
   dependencies:
     "@types/history" "^4.7.11"
     "@types/react" "*"
