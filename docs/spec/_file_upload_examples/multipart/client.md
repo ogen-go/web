@@ -18,7 +18,7 @@ type Post struct {
 }
 
 func MakePost(ctx context.Context, client *api.Client, post Post) error {
-	req := api.NewPostReqForm{
+	req := &api.NewPostReqForm{
 		Title:   post.Title,
 		Content: post.Content,
 	}
@@ -34,7 +34,6 @@ func MakePost(ctx context.Context, client *api.Client, post Post) error {
 			File: attachment,
 		})
 	}
-	_, err := client.NewPost(ctx, req)
-	return err
+	return client.NewPost(ctx, req)
 }
 ```

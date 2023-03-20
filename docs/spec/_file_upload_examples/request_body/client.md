@@ -16,10 +16,6 @@ func UploadAvatarFile(ctx context.Context, client *api.Client, p string) error {
 	defer func() {
 		_ = img.Close()
 	}()
-
-	if _, err := client.UploadAvatar(ctx, api.UploadAvatarReq{Data: img}); err != nil {
-		return err
-	}
-	return nil
+	return client.UploadAvatar(ctx, api.UploadAvatarReq{Data: img})
 }
 ```
