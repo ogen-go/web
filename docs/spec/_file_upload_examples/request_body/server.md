@@ -22,7 +22,7 @@ type AvatarService struct {
 	storage Storage
 }
 
-func (s AvatarService) UploadAvatar(ctx context.Context, req api.UploadAvatarReq) (resp api.UploadAvatarOK, _ error) {
+func (s AvatarService) UploadAvatar(ctx context.Context, req api.UploadAvatarReq) error {
 	f, err := os.CreateTemp("", "avatar")
 	if err != nil {
 		return resp, err
