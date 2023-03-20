@@ -24,7 +24,7 @@ const config = {
                     editUrl: 'https://github.com/ogen-go/web/edit/main/',
                 },
                 blog: {
-                  showReadingTime: true,
+                    showReadingTime: true,
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
@@ -37,7 +37,7 @@ const config = {
     ],
 
     themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+        /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
             navbar: {
                 title: 'ogen',
@@ -57,7 +57,7 @@ const config = {
                         "label": "GoDoc",
                         "position": "left",
                     },
-                    {to: '/blog', label: 'Blog', position: 'left'},
+                    { to: '/blog', label: 'Blog', position: 'left' },
                     {
                         href: 'https://t.me/ogen_dev',
                         label: 'Telegram',
@@ -101,6 +101,9 @@ const config = {
                         ],
                     }
                 ]
+            },
+            colorMode: {
+                respectPrefersColorScheme: true,
             },
         }),
 };
