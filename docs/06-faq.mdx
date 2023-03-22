@@ -5,15 +5,7 @@ sidebar_label: FAQ
 sidebar_position: 5
 ---
 
-## Questions
-- [How to set `404 Not Found` handler?](#how-to-set-404-not-found-handler)
-- [How to set error handler?](#how-to-set-error-handler)
-- [How to use `net/http` middlewares?](#how-to-use-nethttp-middlewares)
-- [How to use prometheus?](#how-to-use-prometheus)
-
-## Answers
-
-#### How to set `404 Not Found` handler?
+### How to set `404 Not Found` handler?
 Use `WithNotFound` option:
 ```go
 h := myHandler{}
@@ -27,7 +19,7 @@ if err != nil {
 
 See [Static router](concepts/static_router.mdx) section for more details about router errors.
 
-#### How to set error handler?
+### How to set error handler?
 Use `WithErrorHandler` option:
 ```go
 h := myHandler{}
@@ -51,7 +43,7 @@ if err != nil {
 
 Also, check out the [Convenient errors](concepts/convenient_errors.md) concept.
 
-#### How to use `net/http` middlewares?
+### How to use `net/http` middlewares?
 
 The `Server` type implements `http.Handler` interface, so you can use any `net/http` middleware with it.
 
@@ -120,7 +112,7 @@ func newServer() *http.Server {
 
 See [Static router](concepts/static_router.mdx#using-nethttp-middlewares) section for more details.
 
-#### How to use prometheus?
+### How to use prometheus?
 
 To instrument server or client with OpenTelemetry and prometheus exporter, pass `oas.Option`:
 
@@ -188,3 +180,8 @@ func newMeterProviderOption() (oas.Option, error) {
 	return oas.WithMeterProvider(promExporter.MeterProvider()), nil
 }
 ```
+
+
+### How to add some tags to generated structures?
+
+[Use `x-oapi-codegen-extra-tags` extension.](spec/extensions.md#extra-struct-field-tags)
