@@ -12,16 +12,29 @@ Work in progress, so some [features are missing](#not-implemented)
 :::
 
 
-* No reflection or `interface{}`
-    * The json encoding is code-generated, optimized and uses [go-faster/jx](https://github.com/go-faster/jx) for speed and overcoming `encoding/json` limitations
-    * Validation is code-generated according to spec
+* No reflection or `interface{}`/`any`
+  * The json encoding is code-generated, optimized and uses [go-faster/jx](https://github.com/go-faster/jx) for speed and overcoming `encoding/json` limitations
+  * Validation is code-generated according to spec
 * Code-generated static radix router
 * No more boilerplate
+  * Structures are generated from OpenAPI v3 specification
+  * Arguments, headers, url queries are parsed according to specification into structures
+  * String formats like `uuid`, `date`, `date-time`, `uri` are represented by go types directly
 * Statically typed client and server
 * Convenient support for optional, nullable and optional nullable fields
+  * No more pointers
+  * Generated `Optional[T]`, `Nullable[T]` or `OptionalNullable[T]` wrappers with helpers
+  * Special case for array handling with `nil` semantics relevant to specification
+    * When array is optional, `nil` denotes absence of value
+    * When nullable, `nil` denotes that value is `nil`
+    * When required, `nil` currently the same as `[]`, but is actually invalid
+    * If both nullable and required, wrapper will be generated (TODO)
 * Generated sum types for oneOf
+  * Primitive types (`string`, `number`) are detected by type
+  * Discriminator field is used if defined in schema
+  * Type is inferred by unique fields if possible
+* Extra Go struct field tags in the generated types
 * OpenTelemetry tracing and metrics
-* Basic security schemas
 
 ## Not implemented
 
