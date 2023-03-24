@@ -4,8 +4,8 @@ title: Static router
 sidebar_label: Static router
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 The `ogen` tool generates a static blazing fast [radix tree](https://en.wikipedia.org/wiki/Radix_tree)-based router.
 
@@ -13,7 +13,7 @@ The `ogen` tool generates a static blazing fast [radix tree](https://en.wikipedi
 
 ### Not Found
 
-If there is no route for the request, the router call the `config.NotFound` handler.
+If there is no route for the request, router calls the `config.NotFound` handler.
 The default handler is [`http.NotFound`](https://pkg.go.dev/net/http#NotFound).
 
 You can change the default handler by using `WithNotFound` option.
@@ -32,7 +32,7 @@ if err != nil {
 
 ### Method Not Allowed
 
-If request path matches but the method is not allowed, the router call the `config.MethodNotAllowed` handler.
+If request path matches but the method is not allowed, router calls the `config.MethodNotAllowed` handler.
 The default handler returns empty body
 with [`405 Method Not Allowed`](https://httpwg.org/specs/rfc7231.html#rfc.section.6.5.5) code
 and [`Allow`](https://httpwg.org/specs/rfc7231.html#header.allow) header with comma-separated allowed methods list.
@@ -147,19 +147,19 @@ To serve other routes, you can use any upper-level router.
 
 Example would serve
 
- - API routes at `/api/v1/*`
- - [pprof](https://pkg.go.dev/net/http/pprof) handlers on `/debug/pprof/*`
- - Files from `static` folder on `/static/*`
- - Prometheus metrics handler on `/metrics`
+- API routes at `/api/v1/*`
+- [pprof](https://pkg.go.dev/net/http/pprof) handlers on `/debug/pprof/*`
+- Files from `static` folder on `/static/*`
+- Prometheus metrics handler on `/metrics`
 
-import CustomStdExample from './_static_router_examples/custom_std.md';
-import CustomChiExample from './_static_router_examples/custom_chi.md';
+import CustomStdExample from "./_static_router_examples/custom_std.md";
+import CustomChiExample from "./_static_router_examples/custom_chi.md";
 
 <Tabs>
   <TabItem value="std" label="net/http" default>
-      <CustomStdExample/>
+    <CustomStdExample />
   </TabItem>
   <TabItem value="chi" label="chi">
-      <CustomChiExample/>
+    <CustomChiExample />
   </TabItem>
 </Tabs>
