@@ -2,11 +2,13 @@
 id: faq
 title: Frequently Asked Questions (FAQ)
 sidebar_label: FAQ
-sidebar_position: 5
+sidebar_position: 7
 ---
 
 ### How to set `404 Not Found` handler?
+
 Use `WithNotFound` option:
+
 ```go
 h := myHandler{}
 srv, err := api.NewServer(h, api.WithNotFound(func(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +22,9 @@ if err != nil {
 See [Static router](concepts/static_router.mdx) section for more details about router errors.
 
 ### How to set error handler?
+
 Use `WithErrorHandler` option:
+
 ```go
 h := myHandler{}
 srv, err := api.NewServer(h, api.WithErrorHandler(func(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
@@ -180,7 +184,6 @@ func newMeterProviderOption() (oas.Option, error) {
 	return oas.WithMeterProvider(promExporter.MeterProvider()), nil
 }
 ```
-
 
 ### How to add some tags to generated structures?
 
