@@ -111,8 +111,13 @@ When all parts of request are parsed, user-defined `Handler` is called.
 
 If any middleware set via `WithMiddleware` option, `Handler` passed to the middleware as `next` parameter.
 
-If [`Convenient errors`](concepts/convenient_errors.md) are available, an error returned from `Handler` is passed to `NewError` handler.
-Otherwise, error handler defined by `WithErrorHandler` is used.
+#### Convenient errors
+
+In case if handler returns an error and [Convenient errors](concepts/convenient_errors.md) are available, behavior depends on error type:
+
+- If error type is equal to convenient error schema (e.g. `ErrorStatusCode`), it passed directly to response encoder
+- If error is `ht.ErrNotImplemented`, [error handler](#error-handling) will be called
+- Otherwise, `NewError` method will be called
 
 ### Error handling
 
