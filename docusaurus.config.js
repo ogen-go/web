@@ -10,8 +10,8 @@ const config = {
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'throw',
     favicon: 'img/favicon.ico',
-    organizationName: 'ogen-go', // Usually your GitHub org/user name.
-    projectName: 'ogen', // Usually your repo name.
+    organizationName: 'ogen-go',
+    projectName: 'ogen',
 
     presets: [
         [
@@ -103,8 +103,13 @@ const config = {
                 ]
             },
             colorMode: {
+                defaultMode: 'dark',
                 respectPrefersColorScheme: true,
             },
+            prism: {
+                theme: require('prism-react-renderer/themes/github'),
+                darkTheme: require('prism-react-renderer/themes/dracula'),
+            }
         }),
 };
 
