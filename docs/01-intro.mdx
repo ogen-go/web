@@ -36,10 +36,10 @@ wget https://raw.githubusercontent.com/ogen-go/web/main/examples/petstore.yml
 
 Create `generate.go` file:
 
-```go title="<project>/generate.go"
+```go title="generate.go"
 package project
 
-//go:generate go run github.com/ogen-go/ogen/cmd/ogen --target petstore --clean petstore.yml
+//go:generate go run github.com/ogen-go/ogen/cmd/ogen@latest --target petstore --clean petstore.yml
 ```
 
 Then go to the root directory of your module, and run:
@@ -134,7 +134,7 @@ func (p *petsService) DeletePet(ctx context.Context, params petstore.DeletePetPa
 	defer p.mux.Unlock()
 
 	delete(p.pets, params.PetId)
-	return petstore.DeletePetOK{}, nil
+	return nil
 }
 
 func (p *petsService) GetPetById(ctx context.Context, params petstore.GetPetByIdParams) (petstore.GetPetByIdRes, error) {
@@ -160,11 +160,12 @@ func (p *petsService) UpdatePet(ctx context.Context, params petstore.UpdatePetPa
 	}
 	p.pets[params.PetId] = pet
 
-	return petstore.UpdatePetOK{}, nil
+	return nil
 }
 ```
 
 ### Run server
+
 Now, we are ready to run our server!
 
 ```go title=main.go
@@ -194,12 +195,14 @@ func main() {
 ```
 
 Check that server started by creating pet
+
 ```bash
 curl -X "POST" -H "Content-Type: application/json" --data "{\"name\":\"Cat\"}" http://localhost:8080/pet
 {"name":"Cat"}
 ```
 
 ### Using generated client
+
 Let's make a simple app that gets the pet by id.
 
 ```go title=main.go
