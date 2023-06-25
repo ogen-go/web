@@ -15,3 +15,7 @@
   --ifm-color-primary-lightest: rgb(79, 203, 227);
   --ifm-code-font-size: 95%;
 }
+
+body{
+  -webkit-text-size-adjust: 100%;
+}
