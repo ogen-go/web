@@ -20,7 +20,7 @@
     "@docusaurus/plugin-google-analytics": "^2.4.1",
     "@docusaurus/preset-classic": "^2.4.1",
     "@mdx-js/react": "^1.6.21",
-    "@svgr/webpack": "^8.0.1",
+    "@svgr/webpack": "^8.1.0",
     "@types/react": "^17.0.2",
     "clsx": "^2.0.0",
     "nth-check": "2.1.1",
