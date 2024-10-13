@@ -204,3 +204,14 @@ func createAPIServer(h oas.Handler) (_ *oas.Server, _ ShutdownFunc, rerr error) 
 ### How to add some tags to generated structures?
 
 [Use `x-oapi-codegen-extra-tags` extension.](spec/extensions.md#extra-struct-field-tags)
+
+### How to disable OpenTelemetry integration?
+
+Disable `ogen/otel` feature via [config](config):
+
+```yaml [title=".ogen.yml"]
+generator:
+  features:
+    disable:
+      - "ogen/otel"
+```
