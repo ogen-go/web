@@ -106,6 +106,37 @@ Optionally, type name can be specified by `x-ogen-name`, for example:
 }
 ```
 
+### Custom field name
+
+Optionally, type name can be specified by `x-ogen-properties`, for example:
+
+```yaml
+components:
+  schemas:
+    Node:
+      type: object
+      properties:
+        parent:
+          $ref: "#/components/schemas/Node"
+        child:
+          $ref: "#/components/schemas/Node"
+      x-ogen-properties:
+        parent:
+          name: "Prev"
+        child:
+          name: "Next"
+```
+
+The generated source code looks like:
+
+```go
+// Ref: #/components/schemas/Node
+type Node struct {
+    Prev *Node `json:"parent"`
+    Next *Node `json:"child"`
+}
+```
+
 ### Extra struct field tags
 
 Optionally, additional Go struct field tags can be specified by `x-oapi-codegen-extra-tags`, for example:
@@ -150,4 +181,51 @@ requestBody:
         type: array
         items:
           type: number
+```
+
+### Operation groups
+
+Optionally, operations can be grouped so a handler interface will be generated for each group of operations.
+This is useful for organizing operations for large APIs.
+
+The group for operations on a path or individual operations can be specified by `x-ogen-operation-group`, for example:
+
+```yaml
+paths:
+  /images:
+    x-ogen-operation-group: Images
+    get:
+      operationId: listImages
+      ...
+  /images/{imageID}:
+    x-ogen-operation-group: Images
+    get:
+      operationId: getImageByID
+      ...
+  /users:
+    x-ogen-operation-group: Users
+    get:
+      operationId: listUsers
+      ...
+```
+
+The generated handler interfaces look like this:
+
+```go
+// x-ogen-operation-group: Images
+type ImagesHandler interface {
+    ListImages(ctx context.Context, req *ListImagesRequest) (*ListImagesResponse, error)
+    GetImageByID(ctx context.Context, req *GetImagesByIDRequest) (*GetImagesByIDResponse, error)
+}
+
+// x-ogen-operation-group: Users
+type UsersHandler interface {
+    ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUsersResponse, error)
+}
+
+type Handler interface {
+    ImagesHandler
+    UsersHandler
+    // All un-grouped operations will be on this interface
+}
 ```
