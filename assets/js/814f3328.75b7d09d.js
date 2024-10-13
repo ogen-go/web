@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkdocs_v_2=globalThis.webpackChunkdocs_v_2||[]).push([[535],{5641:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"ogen: OpenAPI v3 code generator for Go","permalink":"/blog/ogen-intro"}]}')}}]);
