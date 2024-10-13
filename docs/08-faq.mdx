@@ -2,7 +2,7 @@
 id: faq
 title: Frequently Asked Questions (FAQ)
 sidebar_label: FAQ
-sidebar_position: 7
+sidebar_position: 8
 ---
 
 ### How to set `404 Not Found` handler?
@@ -116,75 +116,102 @@ func newServer() *http.Server {
 
 See [Static router](concepts/static_router.mdx#using-nethttp-middlewares) section for more details.
 
-### How to use prometheus?
+### How to use Prometheus?
 
-To instrument server or client with OpenTelemetry and prometheus exporter, pass `oas.Option`:
+See [OpenTelemetry Go SDK examples](https://github.com/open-telemetry/opentelemetry-go-contrib/blob/c3c853808383d1bce596cbb910546c305c9187e8/examples/prometheus/main.go#L33-L38).
+
+Also, see [our `autometer` helper](https://pkg.go.dev/github.com/go-faster/sdk/autometer).
+
+Example setup:
 
 ```go
 package main
 
 import (
-	"github.com/go-faster/errors"
-	promClient "github.com/prometheus/client_golang/prometheus"
-	"go.opentelemetry.io/otel/exporters/prometheus"
-	"go.opentelemetry.io/otel/sdk/export/metric/aggregation"
-	"go.opentelemetry.io/otel/sdk/metric/aggregator/histogram"
-	controller "go.opentelemetry.io/otel/sdk/metric/controller/basic"
-	processor "go.opentelemetry.io/otel/sdk/metric/processor/basic"
-	selector "go.opentelemetry.io/otel/sdk/metric/selector/simple"
-	"go.opentelemetry.io/otel/sdk/resource"
-	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
+	"context"
 
-	"application/oas"
+	"example/internal/oas"
+
+	"github.com/prometheus/client_golang/prometheus"
+	otelprometheus "go.opentelemetry.io/otel/exporters/prometheus"
+	"go.opentelemetry.io/otel/metric"
+	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
+	"go.opentelemetry.io/otel/sdk/resource"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
-// Resource returns new resource for application.
-func Resource(name string) *resource.Resource {
-	r, _ := resource.Merge(
+const appName = "my-ogen-service"
+
+// setupMeterProvider setups Prometheus instrumentation.
+func setupMeterProvider(reg prometheus.Registerer) (metric.MeterProvider, ShutdownFunc, error) {
+	// Create an OpenTelemetry Resource description.
+	//
+	// See https://opentelemetry.io/docs/languages/go/resources/
+	appResource, err := resource.Merge(
 		resource.Default(),
 		resource.NewWithAttributes(
 			semconv.SchemaURL,
-			semconv.ServiceNameKey.String(name),
+			semconv.ServiceNameKey.String(appName),
 		),
-	)
-	return r
-}
-
-func newPrometheus(config prometheus.Config, options ...controller.Option) (*prometheus.Exporter, error) {
-	c := controller.New(
-		processor.NewFactory(
-			selector.NewWithHistogramDistribution(
-				histogram.WithExplicitBoundaries(config.DefaultHistogramBoundaries),
-			),
-			aggregation.CumulativeTemporalitySelector(),
-			processor.WithMemory(true),
-		),
-		options...,
-	)
-	return prometheus.New(config, c)
-}
-
-// newMeterProviderOption returns oas.Option for prometheus instrumentation.
-func newMeterProviderOption() (oas.Option, error) {
-	registry := promClient.NewPedanticRegistry()
-	res := Resource("app")
-	promExporter, err := newPrometheus(prometheus.Config{
-		DefaultHistogramBoundaries: promClient.DefBuckets,
-
-		Registry:   registry,
-		Gatherer:   registry,
-		Registerer: registry,
-	},
-		controller.WithCollectPeriod(0),
-		controller.WithResource(res),
 	)
 	if err != nil {
-		return nil, errors.Wrap(err, "prometheus")
+		return nil, nil, err
 	}
-	return oas.WithMeterProvider(promExporter.MeterProvider()), nil
+
+	// Create Prometheus exporter and given registerer.
+	exp, err := otelprometheus.New(
+		otelprometheus.WithRegisterer(reg),
+	)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	mp := sdkmetric.NewMeterProvider(
+		sdkmetric.WithResource(appResource),
+		sdkmetric.WithReader(exp),
+	)
+	return mp, func(ctx context.Context) error {
+		// Flush collected metrics.
+		_ = mp.ForceFlush(ctx)
+		return mp.Shutdown(ctx)
+	}, nil
+}
+
+type ShutdownFunc = func(ctx context.Context) error
+
+func createAPIServer(h oas.Handler) (_ *oas.Server, _ ShutdownFunc, rerr error) {
+	meterProvider, shutdown, err := setupMeterProvider(prometheus.DefaultRegisterer)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer func() {
+		// Shutdown MeterProvider and release resources in case of error.
+		if rerr != nil {
+			shutdown(context.TODO())
+		}
+	}()
+
+	server, err := oas.NewServer(h, oas.WithMeterProvider(meterProvider))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Returned `shutdown` function would stop metric collection.
+	return server, shutdown, nil
 }
 ```
 
 ### How to add some tags to generated structures?
 
 [Use `x-oapi-codegen-extra-tags` extension.](spec/extensions.md#extra-struct-field-tags)
+
+### How to disable OpenTelemetry integration?
+
+Disable `ogen/otel` feature via [config](config):
+
+```yaml [title=".ogen.yml"]
+generator:
+  features:
+    disable:
+      - "ogen/otel"
+```

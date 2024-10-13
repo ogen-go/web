@@ -1,0 +1,35 @@
+---
+id: config
+title: Config
+sidebar_label: Config
+sidebar_position: 7
+---
+
+ogen could be configurated via `.ogen.yml` file:
+
+```yaml [title=".ogen.yml"]
+# sets generator options.
+generator:
+  # sets generator features.
+  features:
+    enable:
+      # Enables paths client generation
+      - "paths/client"
+      # Enables paths server generation
+      - "paths/server"
+      # Enables validation of client requests
+      - "client/request/validation"
+      # Enables validation of server responses
+      - "server/response/validation"
+      # Enables OpenTelemetry integration
+      - "ogen/otel"
+    disable_all: true
+```
+
+See full config example [here](https://github.com/ogen-go/ogen/blob/main/examples/_config/example_all.yml).
+
+### Features
+
+ogen provides a opt-in/opt-out mechanism for some features like OpenTelemetry integration.
+
+You can find a [complete feature list](https://github.com/ogen-go/ogen/blob/main/gen/features.go) in ogen repository.

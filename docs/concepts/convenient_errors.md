@@ -12,6 +12,7 @@ If spec meets all following requirements:
 then `ogen` generates special handler for errors returned by `Handler` implementation and does not generate default response variant.
 
 For example:
+
 ```yaml
 openapi: 3.0.3
 info:
@@ -87,9 +88,12 @@ type Handler interface {
 
 ### Force or Disable `Convenient errors`
 
-Use `--convenient-errors` option
+Use `generator.convenient_errors` option
 
-- `auto` (default) generates `NewError` if possible
-- `on` tells generator to fail if spec does not meet requirements
-- `off` disables `Convenient errors` at all
-
+```yaml
+generator:
+  # `auto` (default) generates `NewError` if possible
+  # `on` tells generator to fail if spec does not meet requirements
+  # `off` disables `Convenient errors` at all
+  convenient_errors: "auto"
+```
