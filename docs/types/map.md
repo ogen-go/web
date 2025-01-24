@@ -45,7 +45,7 @@ type Map struct {
 
 ## Map with key pattern
 
-`ogen` also supports [`pattenProperties`](https://json-schema.org/understanding-json-schema/reference/object.html#pattern-properties).
+`ogen` also supports [`patternProperties`](https://json-schema.org/understanding-json-schema/reference/object.html#pattern-properties).
 Decoder will populate map only with keys that matches given pattern.
 
 ```yaml
