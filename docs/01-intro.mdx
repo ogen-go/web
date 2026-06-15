@@ -18,11 +18,13 @@ go mod init <project>
 
 ## Installation
 
-Then, install the `ogen` tool.
+Then, add `ogen` as a [tool dependency](https://go.dev/doc/modules/managing-dependencies#tools) of your module (requires Go 1.24+).
 
 ```bash
-go install -v github.com/ogen-go/ogen/cmd/ogen@latest
+go get -tool github.com/ogen-go/ogen/cmd/ogen@latest
 ```
+
+This records `ogen` in the `tool` directive of your `go.mod`, pinning its version for reproducible builds.
 
 ## Generate code
 
@@ -39,7 +41,7 @@ Create `generate.go` file:
 ```go title="generate.go"
 package project
 
-//go:generate go run github.com/ogen-go/ogen/cmd/ogen@latest --target petstore --clean petstore.yml
+//go:generate go tool ogen --target petstore --clean petstore.yml
 ```
 
 Then go to the root directory of your module, and run:
