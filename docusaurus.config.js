@@ -1,6 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const {themes} = require('prism-react-renderer');
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
     title: 'ogen',
@@ -8,7 +10,14 @@ const config = {
     url: 'https://ogen.dev',
     baseUrl: '/',
     onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'throw',
+    future: {
+        v4: true,
+    },
+    markdown: {
+        hooks: {
+            onBrokenMarkdownLinks: 'throw',
+        },
+    },
     favicon: 'img/favicon.ico',
     organizationName: 'ogen-go',
     projectName: 'ogen',
@@ -107,8 +116,8 @@ const config = {
                 respectPrefersColorScheme: true,
             },
             prism: {
-                theme: require('prism-react-renderer/themes/github'),
-                darkTheme: require('prism-react-renderer/themes/dracula'),
+                theme: themes.github,
+                darkTheme: themes.dracula,
             }
         }),
 };
