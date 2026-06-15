@@ -18,6 +18,15 @@ const config = {
             onBrokenMarkdownLinks: 'throw',
         },
     },
+    headTags: [
+        {
+            tagName: 'meta',
+            attributes: {
+                name: 'algolia-site-verification',
+                content: 'F1C0F77133870978',
+            },
+        },
+    ],
     favicon: 'img/favicon.ico',
     organizationName: 'ogen-go',
     projectName: 'ogen',
@@ -118,7 +127,15 @@ const config = {
             prism: {
                 theme: themes.github,
                 darkTheme: themes.dracula,
-            }
+            },
+            // Algolia DocSearch. The apiKey is the public, search-only key — it is
+            // safe to commit. Values can be overridden via environment variables.
+            algolia: {
+                appId: process.env.ALGOLIA_APP_ID || 'X2N6LG2Z0C',
+                apiKey: process.env.ALGOLIA_API_KEY || '7211a1ddff7c214708ba57a83ddb74bd',
+                indexName: process.env.ALGOLIA_INDEX_NAME || 'ogen',
+                contextualSearch: true,
+            },
         }),
 };
 
