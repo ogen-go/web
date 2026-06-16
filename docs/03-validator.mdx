@@ -1,0 +1,29 @@
+---
+id: validator
+title: Validator
+sidebar_label: Validator
+sidebar_position: 3
+---
+
+import SchemaValidator from '@site/src/components/SchemaValidator';
+
+# OpenAPI validator
+
+Validate an OpenAPI v3 document directly in your browser. This runs the **real
+ogen parser and IR builder** compiled to WebAssembly — the same pipeline used by
+the code generator — so the result reflects what ogen would actually accept.
+
+Edit the document below and press **Validate**. Errors are reported with source
+location, exactly like the `ogen` CLI.
+
+<SchemaValidator />
+
+:::info
+
+Everything runs locally in your browser; the document is never uploaded. The
+validator focuses on schema validity — operations that ogen cannot yet generate
+are ignored (equivalent to `ignore_not_implemented: ["all"]`), so a valid
+result does not guarantee every operation is supported. See [Config](config)
+for details.
+
+:::

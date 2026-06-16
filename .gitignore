@@ -8,6 +8,11 @@
 .docusaurus
 .cache-loader
 
+# WASM build artifacts (built by scripts/build-wasm.sh / CI)
+/static/wasm/
+# Local ogen checkout used by CI to build the wasm
+/.ogen-src
+
 # Misc
 .DS_Store
 .env.local

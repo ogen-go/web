@@ -11,8 +11,28 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
 
+    env:
+      # ogen ref to build the WebAssembly validator from. Points at the branch
+      # that contains cmd/ogen-wasm; switch to `main` once it is merged.
+      OGEN_REF: feat/markdown-godoc
+
     steps:
       - uses: actions/checkout@v6
+
+      - name: Checkout ogen
+        uses: actions/checkout@v6
+        with:
+          repository: ogen-go/ogen
+          ref: ${{ env.OGEN_REF }}
+          path: .ogen-src
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Build WASM validator
+        run: OGEN_DIR="$GITHUB_WORKSPACE/.ogen-src" ./scripts/build-wasm.sh
 
       - name: Setup Node
         uses: actions/setup-node@v6
