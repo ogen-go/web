@@ -12,9 +12,8 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
 
     env:
-      # ogen ref to build the WebAssembly validator from. Points at the branch
-      # that contains cmd/ogen-wasm; switch to `main` once it is merged.
-      OGEN_REF: feat/markdown-godoc
+      # ogen ref to build the WebAssembly validator (cmd/ogen-wasm) from.
+      OGEN_REF: main
 
     steps:
       - uses: actions/checkout@v6
