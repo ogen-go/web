@@ -5,31 +5,163 @@ sidebar_label: Config
 sidebar_position: 7
 ---
 
-ogen could be configurated via `.ogen.yml` file:
+# Configuration
 
-```yaml [title=".ogen.yml"]
-# sets generator options.
+ogen can be configured via a YAML file passed with the `--config` flag:
+
+```bash
+go tool ogen --config .ogen.yml --target petstore --clean petstore.yml
+```
+
+Adding the schema annotation at the top of the file enables autocompletion and
+validation in editors that support the YAML language server:
+
+```yaml title=".ogen.yml"
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ogen-go/ogen/main/schemas/ogen.jsonschema.json
+```
+
+The configuration has two main sections: `parser` controls how the OpenAPI
+document is read, and `generator` controls what code is produced.
+
+## Features
+
+ogen provides an opt-in/opt-out mechanism for features such as OpenTelemetry
+integration, client and server generation, and request validation.
+
+```yaml title=".ogen.yml"
 generator:
-  # sets generator features.
   features:
     enable:
-      # Enables paths client generation
+      # Generate client code for API paths.
       - "paths/client"
-      # Enables paths server generation
+      # Generate server code for API paths.
       - "paths/server"
-      # Enables validation of client requests
-      - "client/request/validation"
-      # Enables validation of server responses
-      - "server/response/validation"
-      # Enables OpenTelemetry integration
+      # Enable OpenTelemetry integration.
       - "ogen/otel"
+    disable:
+      # Disable server response validation.
+      - "server/response/validation"
+```
+
+Features are resolved in three steps: start from the default set (unless
+`disable_all` is `true`), apply `disable`, then apply `enable`. Entries in
+`enable` always take priority.
+
+The default feature set is:
+
+```yaml
+- paths/client
+- paths/server
+- webhooks/client
+- webhooks/server
+- ogen/otel
+- ogen/unimplemented
+```
+
+You can find the [complete feature list](https://github.com/ogen-go/ogen/blob/main/gen/features.go)
+in the ogen repository.
+
+### Generate only a client
+
+To generate a client without any server code, disable everything and enable
+just the client features:
+
+```yaml title=".ogen.yml"
+generator:
+  features:
+    enable:
+      - client/editors
+      - client/request/options
+      - ogen/otel
+      - ogen/unimplemented
+      - paths/client
+      - webhooks/client
     disable_all: true
 ```
 
-See full config example [here](https://github.com/ogen-go/ogen/blob/main/examples/config/example_all.yml).
+### Disable OpenTelemetry
 
-### Features
+OpenTelemetry is enabled by default. Disable it to drop the dependency and the
+instrumentation code:
 
-ogen provides a opt-in/opt-out mechanism for some features like OpenTelemetry integration.
+```yaml title=".ogen.yml"
+generator:
+  features:
+    disable:
+      - "ogen/otel"
+```
 
-You can find a [complete feature list](https://github.com/ogen-go/ogen/blob/main/gen/features.go) in ogen repository.
+## Skipping unsupported operations
+
+Some real-world specifications contain constructs that ogen cannot yet
+generate. By default, generation fails on the first such error. Use
+`ignore_not_implemented` to skip those operations instead:
+
+```yaml title=".ogen.yml"
+generator:
+  # Skip all not-implemented generation errors.
+  ignore_not_implemented: ["all"]
+```
+
+You can also skip only specific cases, which keeps the rest of the
+specification strict:
+
+```yaml title=".ogen.yml"
+generator:
+  ignore_not_implemented:
+    - "nested objects in form parameters"
+```
+
+## Filters
+
+Generate code for a subset of the specification by path or HTTP method:
+
+```yaml title=".ogen.yml"
+generator:
+  filters:
+    # Only paths matching this regular expression are generated.
+    path_regex: "^/api/v1/.*"
+    # Only these methods are generated.
+    methods:
+      - GET
+      - POST
+```
+
+## Type inference
+
+When a schema omits an explicit `type`, ogen can infer it from the schema's
+properties. This is required for many large real-world specs such as the
+GitHub or Kubernetes APIs:
+
+```yaml title=".ogen.yml"
+parser:
+  infer_types: true
+```
+
+## Full example
+
+A configuration combining the most common options, similar to what is used to
+generate the GitHub API client:
+
+```yaml title=".ogen.yml"
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ogen-go/ogen/main/schemas/ogen.jsonschema.json
+
+parser:
+  # Detect schema type from its properties.
+  infer_types: true
+
+generator:
+  features:
+    enable:
+      - "paths/client"
+      - "paths/server"
+      - "ogen/otel"
+    disable_all: true
+  # Skip operations that are not yet supported.
+  ignore_not_implemented: ["all"]
+```
+
+See the [full reference config](https://github.com/ogen-go/ogen/blob/main/examples/config/example_all.yml),
+which documents every available option with example values, and the
+[default config](https://github.com/ogen-go/ogen/blob/main/examples/config/default_all.yml),
+which shows all defaults.

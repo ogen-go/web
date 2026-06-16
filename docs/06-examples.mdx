@@ -1,0 +1,213 @@
+---
+id: examples
+title: Examples
+sidebar_label: Examples
+sidebar_position: 6
+---
+
+# Examples
+
+This page collects small, focused examples. For a complete runnable project,
+see the [Getting started](intro) guide and the
+[ogen-go/example](https://github.com/ogen-go/example) repository.
+
+## Real-world specifications
+
+ogen is tested against a large set of real-world OpenAPI documents. Each of
+these is generated in CI from the
+[`examples`](https://github.com/ogen-go/ogen/tree/main/examples) directory:
+
+| API | Spec |
+| --- | --- |
+| GitHub | `api.github.com.json` |
+| Kubernetes | `k8s.json` |
+| OpenAI | `openai.openapi.yaml` |
+| Telegram Bot API | `telegram_bot_api.json` |
+| Firecracker | `firecracker.json` |
+| Petstore (expanded) | `petstore-expanded.yml` |
+
+Generation is driven by `go:generate` directives. A typical one looks like:
+
+```go title="generate.go"
+package api
+
+//go:generate go tool ogen --clean --config .ogen.yml --target api github.json
+```
+
+Larger specs like GitHub and Kubernetes rely on type inference and skipping
+not-yet-supported operations:
+
+```yaml title=".ogen.yml"
+parser:
+  infer_types: true
+generator:
+  ignore_not_implemented: ["all"]
+```
+
+See [Config](config) for the full list of options.
+
+## Optional and nullable fields
+
+ogen avoids pointers for optional and nullable values. Given this schema:
+
+```yaml
+components:
+  schemas:
+    Pet:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        nickname:
+          type: string
+          nullable: true
+        tag:
+          type: string
+          format: uuid
+```
+
+ogen generates wrappers instead of pointers:
+
+```go
+type Pet struct {
+    ID       int64        `json:"id"`
+    Name     string       `json:"name"`
+    Nickname OptNilString `json:"nickname"` // optional + nullable
+    Tag      OptUUID      `json:"tag"`      // optional uuid.UUID
+}
+```
+
+Each wrapper comes with helpers:
+
+```go
+pet := Pet{ID: 1, Name: "Cat"}
+pet.Tag = NewOptUUID(uuid.New())
+
+if v, ok := pet.Tag.Get(); ok {
+    fmt.Println("tag:", v)
+}
+
+pet.Nickname = NewOptNilString("Kitty")
+pet.Nickname.SetToNull() // encodes as JSON null
+```
+
+## Sum types from `oneOf`
+
+A `oneOf` with a discriminator becomes a Go sum type:
+
+```yaml
+components:
+  schemas:
+    Animal:
+      oneOf:
+        - $ref: "#/components/schemas/Cat"
+        - $ref: "#/components/schemas/Dog"
+      discriminator:
+        propertyName: kind
+        mapping:
+          cat: "#/components/schemas/Cat"
+          dog: "#/components/schemas/Dog"
+```
+
+The generated type carries the active variant and helper constructors:
+
+```go
+type Animal struct {
+    Type AnimalType // "Cat" or "Dog"
+    Cat  Cat
+    Dog  Dog
+}
+
+func NewCatAnimal(v Cat) Animal
+func NewDogAnimal(v Dog) Animal
+```
+
+Switch on the variant when handling a response:
+
+```go
+switch a.Type {
+case CatAnimal:
+    fmt.Println("meow:", a.Cat.Name)
+case DogAnimal:
+    fmt.Println("woof:", a.Dog.Name)
+}
+```
+
+ogen can also infer the discriminator automatically when none is defined — by
+type, by unique field names, or by enum values. See the
+[sum types reference](types/sumtype.md) for details.
+
+## Server-Sent Events
+
+For `text/event-stream` responses, ogen generates an SSE client:
+
+```yaml
+paths:
+  /events:
+    get:
+      operationId: streamEvents
+      responses:
+        '200':
+          description: Event stream
+          content:
+            text/event-stream:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+```
+
+The generated client exposes an iterator over events and handles reconnection
+automatically:
+
+```go
+stream, err := client.StreamEvents(ctx)
+if err != nil {
+    return err
+}
+defer stream.Close()
+
+for ev, err := range stream.All(ctx) {
+    if err != nil {
+        return err
+    }
+    fmt.Println(ev.Data.Message)
+}
+```
+
+## Securing requests
+
+Security schemes become a `SecuritySource` interface you implement once. For an
+API secured with a bearer token:
+
+```yaml
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []
+```
+
+```go
+type securitySource struct {
+    token string
+}
+
+func (s securitySource) BearerAuth(ctx context.Context, operationName api.OperationName) (api.BearerAuth, error) {
+    return api.BearerAuth{Token: s.token}, nil
+}
+
+client, err := api.NewClient(server, securitySource{token: os.Getenv("TOKEN")})
+```
+
+The token is then attached to every request that requires it.
