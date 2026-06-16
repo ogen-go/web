@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkdocs_v_2=globalThis.webpackChunkdocs_v_2||[]).push([["1833"],{5513(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"ogen: OpenAPI v3 code generator for Go","permalink":"/blog/ogen-intro","unlisted":false,"date":"2022-11-30T00:00:00.000Z"}]}')}}]);
