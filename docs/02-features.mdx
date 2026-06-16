@@ -4,14 +4,6 @@ title: Features
 sidebar_position: 2
 ---
 
-
-:::caution
-
-Work in progress, so some [features are missing](#not-implemented)
-
-:::
-
-
 * No reflection or `interface{}`/`any`
   * The json encoding is code-generated, optimized and uses [go-faster/jx](https://github.com/go-faster/jx) for speed and overcoming `encoding/json` limitations
   * Validation is code-generated according to spec
@@ -23,23 +15,34 @@ Work in progress, so some [features are missing](#not-implemented)
 * Statically typed client and server
 * Convenient support for optional, nullable and optional nullable fields
   * No more pointers
-  * Generated `Optional[T]`, `Nullable[T]` or `OptionalNullable[T]` wrappers with helpers
+  * Generated `OptT`, `NilT` or `OptNilT` wrappers with helpers
   * Special case for array handling with `nil` semantics relevant to specification
     * When array is optional, `nil` denotes absence of value
     * When nullable, `nil` denotes that value is `nil`
     * When required, `nil` currently the same as `[]`, but is actually invalid
     * If both nullable and required, wrapper will be generated (TODO)
+* Support for untyped parameters (`any`)
+  * Parameters with no `type` specified in schema are represented as Go `any`
+  * Decoded as strings from URI (path, query, header, cookie)
+  * Client encoding uses `fmt.Sprint` for flexible value conversion
 * Generated sum types for oneOf
   * Primitive types (`string`, `number`) are detected by type
   * Discriminator field is used if defined in schema
-  * Type is inferred by unique fields if possible
+  * Type is inferred automatically when no discriminator is defined
+    * Field name discrimination: variants with different field names
+    * Field type discrimination: same field name, but different JSON types
+    * Field value discrimination: same field name and type, but disjoint enum values
+* Support for the JSON Schema [`const`](https://json-schema.org/understanding-json-schema/reference/generic#constant-values) keyword
+  * Const values are encoded directly without runtime lookups
+  * Works with `allOf` schema merging
+* Security schemes are generated into a typed `SecuritySource` interface
+* Webhooks client and server generation
 * Extra Go struct field tags in the generated types
+* Configurable via [`x-` extension properties](spec/extensions): custom type and field names, extra tags, custom validation, operation groups and JSON streaming
 * OpenTelemetry tracing and metrics
-
-## Not implemented
-
-* Content-types
-  * XML
+* Server-Sent Events (SSE) client generation for `text/event-stream`
+  * Generated client exposes an iterator over events
+  * Automatic reconnection with configurable retry behavior
 
 ## Incompatibility
 
