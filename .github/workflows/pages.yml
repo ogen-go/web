@@ -16,10 +16,10 @@ jobs:
       OGEN_REF: main
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Checkout ogen
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ogen-go/ogen
           ref: ${{ env.OGEN_REF }}
