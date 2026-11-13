@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://ogen.dev/blog</id>
+    <title>ogen Blog</title>
+    <updated>2026-11-13T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://ogen.dev/blog"/>
+    <subtitle>ogen Blog</subtitle>
+    <icon>https://ogen.dev/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[ogen v1.25.0]]></title>
+        <id>https://ogen.dev/blog/v1.25.0</id>
+        <link href="https://ogen.dev/blog/v1.25.0"/>
+        <updated>2026-11-13T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[ogen v1.25.0 adds Swagger UI out of the box, works with Go 1.27.2, and fixes a dozen generator bugs.]]></summary>
+        <content type="html"><![CDATA[<p>ogen v1.25.0 adds Swagger UI out of the box, works with Go 1.27.2, and fixes a dozen generator bugs.
+Nine people made their first contribution to this release. Thank you!</p>
+<!-- -->
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="upgrade">Upgrade<a href="https://ogen.dev/blog/v1.25.0#upgrade" class="hash-link" aria-label="Direct link to Upgrade" title="Direct link to Upgrade" translate="no">​</a></h2>
+<div class="language-console codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-console codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token plain">go get -tool github.com/ogen-go/ogen/cmd/ogen@v1.25.0</span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain">go generate ./...</span><br></div></code></pre></div></div>
+<p>Both new features are opt-in. With the default config, the generated code changes only where the bug fixes below apply.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="swagger-ui-and-the-embedded-spec">Swagger UI and the embedded spec<a href="https://ogen.dev/blog/v1.25.0#swagger-ui-and-the-embedded-spec" class="hash-link" aria-label="Direct link to Swagger UI and the embedded spec" title="Direct link to Swagger UI and the embedded spec" translate="no">​</a></h2>
+<p>Two new features serve the OpenAPI document from the generated server (<a href="https://github.com/ogen-go/ogen/pull/1775" target="_blank" rel="noopener noreferrer" class="">#1775</a>):</p>
+<ul>
+<li class=""><code>server/spec</code> embeds the document and generates <code>SpecJSON()</code>, <code>SpecYAML()</code>, <code>SpecHandler()</code> and the <code>WithDocs</code> server option.</li>
+<li class=""><code>server/swagger_ui</code> also serves Swagger UI. It implies <code>server/spec</code>.</li>
+</ul>
+<div class="language-yaml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockTitle_OeMC">.ogen.yml</div><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-yaml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token key atrule">generator</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain">  </span><span class="token key atrule">features</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><span class="token key atrule">enable</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain">      </span><span class="token punctuation" style="color:rgb(248, 248, 242)">-</span><span class="token plain"> server/swagger_ui</span><br></div></code></pre></div></div>
+<div class="language-go codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-go codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token plain">srv</span><span class="token punctuation" style="color:rgb(248, 248, 242)">,</span><span class="token plain"> err </span><span class="token operator">:=</span><span class="token plain"> api</span><span class="token punctuation" style="color:rgb(248, 248, 242)">.</span><span class="token function" style="color:rgb(80, 250, 123)">NewServer</span><span class="token punctuation" style="color:rgb(248, 248, 242)">(</span><span class="token plain">handler</span><span class="token punctuation" style="color:rgb(248, 248, 242)">,</span><span class="token plain"> api</span><span class="token punctuation" style="color:rgb(248, 248, 242)">.</span><span class="token function" style="color:rgb(80, 250, 123)">WithDocs</span><span class="token punctuation" style="color:rgb(248, 248, 242)">(</span><span class="token string" style="color:rgb(255, 121, 198)">"/docs"</span><span class="token punctuation" style="color:rgb(248, 248, 242)">)</span><span class="token punctuation" style="color:rgb(248, 248, 242)">)</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token comment" style="color:rgb(98, 114, 164)">// http://localhost:8080/docs/             Swagger UI</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token comment" style="color:rgb(98, 114, 164)">// http://localhost:8080/docs/openapi.json the spec</span><br></div></code></pre></div></div>
+<p>Swagger UI assets ship in the <code>swaggerui</code> package, which uses only the standard library.
+To load them from a CDN instead, use <code>WithDocsAssetsURL</code>.
+The <code>generator.spec_source</code> option (<code>auto</code>, <code>raw</code>, <code>expanded</code>) picks which document gets embedded:
+the original file, or a self-contained one with external <code>$ref</code>s resolved.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="struct-aliases-that-keep-methods">Struct aliases that keep methods<a href="https://ogen.dev/blog/v1.25.0#struct-aliases-that-keep-methods" class="hash-link" aria-label="Direct link to Struct aliases that keep methods" title="Direct link to Struct aliases that keep methods" translate="no">​</a></h2>
+<p>When several content types or response codes share one schema, ogen generates a named type for each of them:</p>
+<div class="language-go codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-go codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token keyword" style="color:rgb(189, 147, 249);font-style:italic">type</span><span class="token plain"> CreatePetOK Pet</span><br></div></code></pre></div></div>
+<p>Go drops the methods of <code>Pet</code> from such a type.
+The new <code>schema/embed_struct_aliases</code> feature generates an embedding instead, so the methods carry over
+and a single interface covers all the variants (<a href="https://github.com/ogen-go/ogen/pull/1789" target="_blank" rel="noopener noreferrer" class="">#1789</a>):</p>
+<div class="language-go codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-go codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token keyword" style="color:rgb(189, 147, 249);font-style:italic">type</span><span class="token plain"> CreatePetOK </span><span class="token keyword" style="color:rgb(189, 147, 249);font-style:italic">struct</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">{</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain">	Pet</span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token punctuation" style="color:rgb(248, 248, 242)">}</span><br></div></code></pre></div></div>
+<p>This changes the generated API (<code>CreatePetOK(pet)</code> becomes <code>CreatePetOK{pet}</code>), so the feature is off by default.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="go-1272">Go 1.27.2<a href="https://ogen.dev/blog/v1.25.0#go-1272" class="hash-link" aria-label="Direct link to Go 1.27.2" title="Direct link to Go 1.27.2" translate="no">​</a></h2>
+<p>ogen now builds and runs on Go 1.27.2 with JSON v2 enabled.
+<code>GOEXPERIMENT=nojsonv2</code> is no longer needed (<a href="https://github.com/ogen-go/ogen/pull/1774" target="_blank" rel="noopener noreferrer" class="">#1774</a>).</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="fixes">Fixes<a href="https://ogen.dev/blog/v1.25.0#fixes" class="hash-link" aria-label="Direct link to Fixes" title="Direct link to Fixes" translate="no">​</a></h2>
+<p>Generated code that failed to compile:</p>
+<ul>
+<li class="">Responses that share an inline header schema (<a href="https://github.com/ogen-go/ogen/pull/1769" target="_blank" rel="noopener noreferrer" class="">#1769</a>).</li>
+<li class="">Constant <code>uri</code> and other string formats (<a href="https://github.com/ogen-go/ogen/pull/1752" target="_blank" rel="noopener noreferrer" class="">#1752</a>).</li>
+<li class="">Object-level <code>x-ogen-validate</code> (<a href="https://github.com/ogen-go/ogen/pull/1772" target="_blank" rel="noopener noreferrer" class="">#1772</a>).</li>
+<li class=""><code>uniqueItems</code> arrays of MAC addresses (<a href="https://github.com/ogen-go/ogen/pull/1788" target="_blank" rel="noopener noreferrer" class="">#1788</a>).</li>
+<li class="">Webhooks with <code>security</code>. <code>NewWebhookServer</code> now takes a <code>SecurityHandler</code>, and <code>NewWebhookClient</code> takes a <code>SecuritySource</code>,
+but only when some webhook requires security (<a href="https://github.com/ogen-go/ogen/pull/1771" target="_blank" rel="noopener noreferrer" class="">#1771</a>).</li>
+<li class="">A security requirement that combines schemes with AND, one of them unsupported and listed in
+<code>ignore_not_implemented</code> (<a href="https://github.com/ogen-go/ogen/pull/1760" target="_blank" rel="noopener noreferrer" class="">#1760</a>).</li>
+</ul>
+<p>Wrong behavior:</p>
+<ul>
+<li class="">A <code>default</code> set next to a <code>$ref</code> applied to every use of that schema, not just that one (<a href="https://github.com/ogen-go/ogen/pull/1758" target="_blank" rel="noopener noreferrer" class="">#1758</a>).</li>
+<li class="">The client sent an empty value for unset optional parameters with structured content.
+Now it omits them (<a href="https://github.com/ogen-go/ogen/pull/1741" target="_blank" rel="noopener noreferrer" class="">#1741</a>).</li>
+<li class="">Decoding <code>null</code> into a nullable array kept the old value (<a href="https://github.com/ogen-go/ogen/pull/1789" target="_blank" rel="noopener noreferrer" class="">#1789</a>).</li>
+<li class=""><code>allOf</code> merging dropped <code>x-ogen-time-format</code> (<a href="https://github.com/ogen-go/ogen/pull/1778" target="_blank" rel="noopener noreferrer" class="">#1778</a>).</li>
+</ul>
+<p>Smaller fixes:</p>
+<ul>
+<li class=""><code>min</code>/<code>max</code> conflict errors now name the real keywords, like <code>minLength</code> (<a href="https://github.com/ogen-go/ogen/pull/1733" target="_blank" rel="noopener noreferrer" class="">#1733</a>).</li>
+<li class="">A path like <code>/caf%e9/100%</code> crashed ogen with a panic. Now ogen reports an invalid escape (<a href="https://github.com/ogen-go/ogen/pull/1732" target="_blank" rel="noopener noreferrer" class="">#1732</a>).</li>
+</ul>
+<p>The full list of changes is in the <a href="https://github.com/ogen-go/ogen/releases/tag/v1.25.0" target="_blank" rel="noopener noreferrer" class="">release notes</a>.</p>]]></content>
+        <category label="release" term="release"/>
+    </entry>
+</feed>

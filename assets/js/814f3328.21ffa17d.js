@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkdocs_v_2=globalThis.webpackChunkdocs_v_2||[]).push([["1833"],{5513(e){e.exports=JSON.parse('{"title":"Releases","items":[{"title":"ogen v1.25.0","permalink":"/blog/v1.25.0","unlisted":false,"date":"2026-11-13T00:00:00.000Z"}]}')}}]);
