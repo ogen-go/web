@@ -41,7 +41,11 @@ const config = {
                     // Please change this to your repo.
                     editUrl: 'https://github.com/ogen-go/web/edit/main/',
                 },
-                blog: false,
+                blog: {
+                    showReadingTime: false,
+                    blogSidebarTitle: 'Releases',
+                    onUntruncatedBlogPosts: 'ignore',
+                },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
                 },
@@ -72,6 +76,11 @@ const config = {
                         "href": "https://pkg.go.dev/github.com/ogen-go/ogen?tab=doc",
                         "label": "GoDoc",
                         "position": "left",
+                    },
+                    {
+                        to: '/blog',
+                        label: 'Blog',
+                        position: 'left',
                     },
                     {
                         href: 'https://t.me/ogen_dev',
